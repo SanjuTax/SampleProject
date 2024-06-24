@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE.md file in the project root for more information. -->
+<Rule Name="Application" Description="Especifica las propiedades y la configuración de la aplicación del proyecto." DisplayName="Aplicación" PageTemplate="generic" Order="100" xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.Categories>
+    <Category Name="General" DisplayName="General" Description="Configuración general de la aplicación." />
+    <Category Name="Resources" DisplayName="Recursos" Description="Configuración de recursos de la aplicación." />
+  </Rule.Categories>
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" SourceOfDefaultValue="AfterContext" HasConfigurationCondition="False" />
+  </Rule.DataSource>
+  <EnumProperty Name="OutputType" DisplayName="Tipo de resultado" Description="Especifica el tipo de aplicación para compilar." Category="General">
+    <EnumValue Name="Library" DisplayName="Biblioteca de clases" />
+    <EnumValue Name="Exe" DisplayName="Aplicación de consola" />
+    <EnumValue Name="WinExe" DisplayName="Aplicación Windows" />
+  </EnumProperty>
+  <BoolProperty Name="TargetMultipleFrameworks" DisplayName="Destinar a varias plataformas" Description="Compile este proyecto para varias plataformas de destino." HelpUrl="https://go.microsoft.com/fwlink/?linkid=2147236" Category="General">
+    <BoolProperty.DataSource>
+      <DataSource Persistence="ProjectFileWithInterception" HasConfigurationCondition="False" />
+    </BoolProperty.DataSource>
+    <BoolProperty.Metadata>
+      <NameValuePair Name="VisibilityCondition">
+        <NameValuePair.Value>false</NameValuePair.Value>
+      </NameValuePair>
+    </BoolProperty.Metadata>
+  </BoolProperty>
+  <DynamicEnumProperty Name="TargetFramework" DisplayName="Marco de destino" Description="Especifica la versión de .NET a la que se destina la aplicación. Esta opción puede tener distintos valores en función de las versiones de .NET instaladas en el equipo." HelpUrl="https://go.microsoft.com/fwlink/?linkid=2147236" Category="General" EnumProvider="SupportedTargetFrameworksEnumProvider" MultipleValuesAllowed="False">
+    <DynamicEnumProperty.Metadata>
+      <NameValuePair Name="VisibilityCondition">
+        <NameValuePair.Value>(not (evaluated "Application" "TargetMultipleFrameworks"))</NameValuePair.Value>
+      </NameValuePair>
+      <NameValuePair Name="SearchTerms" Value="TFM" />
+      <NameValuePair Name="DependsOn" Value="Application::TargetMultipleFrameworks" />
+    </DynamicEnumProperty.Metadata>
+  </DynamicEnumProperty>
+  <StringProperty Name="TargetFrameworks" DisplayName="Plataformas de destino" Description="Especifica la lista de plataformas a las que se destina este proyecto, delimitadas por punto y coma." HelpUrl="https://go.microsoft.com/fwlink/?linkid=2147236" Category="General">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFileWithInterception" HasConfigurationCondition="False" />
+    </StringProperty.DataSource>
+    <StringProperty.Metadata>
+      <NameValuePair Name="VisibilityCondition">
+        <NameValuePair.Value>(evaluated "Application" "TargetMultipleFrameworks")</NameValuePair.Value>
+      </NameValuePair>
+      <NameValuePair Name="SearchTerms" Value="TFM" />
+      <NameValuePair Name="DependsOn" Value="Application::TargetMultipleFrameworks" />
+    </StringProperty.Metadata>
+  </StringProperty>
+  <StringProperty Name="InstallOtherFrameworks" DisplayName="Instalar otras plataformas">
+    <StringProperty.DataSource>
+      <DataSource PersistedName="InstallOtherFrameworks" Persistence="ProjectFileWithInterception" HasConfigurationCondition="False" />
+    </StringProperty.DataSource>
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="LinkAction">
+        <ValueEditor.Metadata>
+          <NameValuePair Name="Action" Value="URL" />
+          <NameValuePair Name="URL" Value="http://go.microsoft.com/fwlink/?LinkID=287120" />
+        </ValueEditor.Metadata>
+      </ValueEditor>
+    </StringProperty.ValueEditors>
+  </StringProperty>
+  <DynamicEnumProperty Name="StartupObject" DisplayName="Objeto de inicio" Description="Define el punto de entrada al que se va a llamar cuando se cargue la aplicación. Normalmente, se establece en el formulario principal de la aplicación o en el procedimiento &quot;Principal&quot; que debe ejecutarse cuando se inicia la aplicación. Las bibliotecas de clases no definen ningún punto de entrada." Category="General" EnumProvider="StartupObjectsEnumProvider">
+    <DynamicEnumProperty.Metadata>
+      <NameValuePair Name="VisibilityCondition">
+        <NameValuePair.Value>(ne (evaluated "Application" "OutputType") "Library")</NameValuePair.Value>
+      </NameValuePair>
+    </DynamicEnumProperty.Metadata>
+  </DynamicEnumProperty>
+  <StringProperty Name="AssemblyName" DisplayName="Nombre del ensamblado" Description="Especifica el nombre del archivo de salida que incluirá el manifiesto del ensamblado." Category="General" />
+  <StringProperty Name="RootNamespace" DisplayName="Espacio de nombres predeterminado" Description="Especifica el espacio de nombres base para los archivos agregados al proyecto." Category="General" />
+  <EnumProperty Name="ResourceSpecificationKind" DisplayName="Recursos" Description="Especifica cómo se administrarán los recursos de la aplicación." Category="Resources">
+    <EnumProperty.DataSource>
+      <DataSource PersistedName="ResourceSpecificationKind" Persistence="ProjectFileWithInterception" HasConfigurationCondition="False" />
+    </EnumProperty.DataSource>
+    <EnumValue Name="IconAndManifest" DisplayName="Icono y manifiesto" />
+    <EnumValue Name="ResourceFile" DisplayName="Archivo de recursos" />
+  </EnumProperty>
+  <StringProperty Name="ApplicationIcon" DisplayName="Icono" Category="Resources" Description="Establece el archivo .ico que quiere usar como icono del programa." Subtype="file">
+    <StringProperty.Metadata>
+      <NameValuePair Name="DependsOn" Value="Application::ResourceSpecificationKind" />
+      <NameValuePair Name="VisibilityCondition">
+        <NameValuePair.Value>(eq (evaluated "Application" "ResourceSpecificationKind") "IconAndManifest")</NameValuePair.Value>
+      </NameValuePair>
+    </StringProperty.Metadata>
+  </StringProperty>
+  <EnumProperty Name="ApplicationManifestKind" DisplayName="Manifiesto" Description="Selecciona una opción de generación del manifiesto cuando la aplicación se ejecuta en Windows Vista o posterior bajo Control de cuentas de usuario (UAC). Las opciones incluyen un manifiesto predeterminado, ningún manifiesto o un manifiesto personalizado que el proyecto proporciona." Category="Resources">
+    <EnumProperty.DataSource>
+      <DataSource PersistedName="ApplicationManifestKind" Persistence="ProjectFileWithInterception" HasConfigurationCondition="False" />
+    </EnumProperty.DataSource>
+    <EnumProperty.Metadata>
+      <NameValuePair Name="DependsOn" Value="Application::ResourceSpecificationKind" />
+      <NameValuePair Name="VisibilityCondition">
+        <NameValuePair.Value>(eq (evaluated "Application" "ResourceSpecificationKind") "IconAndManifest")</NameValuePair.Value>
+      </NameValuePair>
+    </EnumProperty.Metadata>
+    <EnumValue Name="DefaultManifest" DisplayName="Incrustar manifiesto con configuración predeterminada" />
+    <EnumValue Name="NoManifest" DisplayName="Crear la aplicación sin manifiesto" />
+    <EnumValue Name="CustomManifest" DisplayName="Usar un manifiesto personalizado" />
+  </EnumProperty>
+  <StringProperty Name="ApplicationManifestPath" DisplayName="Ruta de acceso del manifiesto" Description="Ruta de acceso al archivo de manifiesto personalizado." Category="Resources" Subtype="file">
+    <StringProperty.DataSource>
+      <DataSource PersistedName="ApplicationManifestPath" Persistence="ProjectFileWithInterception" HasConfigurationCondition="False" />
+    </StringProperty.DataSource>
+    <StringProperty.Metadata>
+      <NameValuePair Name="DependsOn" Value="Application::ResourceSpecificationKind;Application::ApplicationManifestKind" />
+      <NameValuePair Name="VisibilityCondition">
+        <NameValuePair.Value>
+          (and 
+            (eq (evaluated "Application" "ApplicationManifestKind") "CustomManifest")
+            (eq (evaluated "Application" "ResourceSpecificationKind") "IconAndManifest"))
+        </NameValuePair.Value>
+      </NameValuePair>
+    </StringProperty.Metadata>
+  </StringProperty>
+  <StringProperty Name="Win32Resource" DisplayName="Archivo de recursos" Description="Especifica un archivo de recursos para el proyecto." HelpUrl="https://go.microsoft.com/fwlink/?linkid=2147078" Category="Resources" Subtype="file">
+    <StringProperty.Metadata>
+      <NameValuePair Name="DependsOn" Value="Application::ResourceSpecificationKind" />
+      <NameValuePair Name="VisibilityCondition">
+        <NameValuePair.Value>(eq (evaluated "Application" "ResourceSpecificationKind") "ResourceFile")</NameValuePair.Value>
+      </NameValuePair>
+    </StringProperty.Metadata>
+  </StringProperty>
+</Rule>

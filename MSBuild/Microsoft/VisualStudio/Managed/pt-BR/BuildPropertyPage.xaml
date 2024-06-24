@@ -1,0 +1,218 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE.md file in the project root for more information. -->
+<Rule Name="Build" Description="Especifica as propriedades que controlam como o projeto é compilado." DisplayName="Criar" PageTemplate="generic" Order="200" xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.Categories>
+    <Category Name="General" DisplayName="Geral" />
+    <Category Name="ErrorsAndWarnings" Description="Configura as opções de erro e de aviso do processo de build." DisplayName="Erros e avisos" />
+    <Category Name="Output" Description="Configura as opções de saída do processo de build." DisplayName="Saída" />
+    <Category Name="Events" Description="Configures custom events that run before and after build." DisplayName="Events" />
+    <Category Name="StrongNaming" Description="Configura a assinatura de nome forte das saídas de build." DisplayName="Nome forte" />
+  </Rule.Categories>
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" SourceOfDefaultValue="AfterContext" HasConfigurationCondition="True" />
+  </Rule.DataSource>
+  <StringProperty Name="DefineConstants" DisplayName="Símbolos de compilação condicional" Description="Especifica os símbolos nos quais a compilação condicional deve ser executada. Separe os símbolos com um ponto e vírgula (';')." HelpUrl="https://go.microsoft.com/fwlink/?linkid=2147079" Category="General" />
+  <EnumProperty Name="PlatformTarget" DisplayName="Destino de plataforma" Description="Especifica o processador ao qual o arquivo de saída será direcionado. Escolha 'x86' para processadores compatíveis com Intel de 32 bits, escolha 'x64' para processadores compatíveis com Intel de 64 bits ou escolha 'Qualquer CPU' para especificar que qualquer processador é aceito. 'Qualquer CPU' é o valor padrão para os projetos, pois permite que o aplicativo seja executado em uma variedade de hardwares mais ampla." HelpUrl="https://go.microsoft.com/fwlink/?linkid=2147129" Category="General">
+    <EnumValue Name="AnyCPU" DisplayName="Qualquer CPU" />
+    <EnumValue Name="x64" DisplayName="x64" />
+    <EnumValue Name="x86" DisplayName="x86" />
+  </EnumProperty>
+  <EnumProperty Name="Nullable" DisplayName="Permite valor nulo" Description="Especifica o contexto anulável do C# em todo o projeto. Disponível somente para projetos que usam o C# 8.0 ou posterior." HelpUrl="https://go.microsoft.com/fwlink/?linkid=2146796" Category="General">
+    <EnumProperty.DataSource>
+      <DataSource HasConfigurationCondition="False" />
+    </EnumProperty.DataSource>
+    <EnumValue Name="disable" DisplayName="Desabilitar" />
+    <EnumValue Name="enable" DisplayName="Habilitar" />
+    <EnumValue Name="warnings" DisplayName="Avisos" />
+    <EnumValue Name="annotations" DisplayName="Anotações" />
+  </EnumProperty>
+  <BoolProperty Name="AllowUnsafeBlocks" DisplayName="Permitir código não seguro" Description="Permite que o código que usa a palavra-chave 'unsafe' seja compilado." HelpUrl="https://go.microsoft.com/fwlink/?linkid=2146797" Category="General">
+    <BoolProperty.Metadata>
+      <NameValuePair Name="SearchTerms" Value="ponteiros" />
+    </BoolProperty.Metadata>
+  </BoolProperty>
+  <BoolProperty Name="Optimize" DisplayName="Otimizar código" Description="Habilita ou desabilita otimizações executadas pelo compilador para tornar o arquivo de saída menor, mais rápido e mais eficiente." HelpUrl="https://go.microsoft.com/fwlink/?linkid=2147080" Category="General">
+    <BoolProperty.Metadata>
+      <NameValuePair Name="SearchTerms" Value="otimizar;otimização" />
+    </BoolProperty.Metadata>
+  </BoolProperty>
+  <!-- TODO create fwlink for this HelpUrl, and find or create a better documentation source -->
+  <EnumProperty Name="DebugType" DisplayName="Debug symbols" Description="Specifies the kind of debug symbols produced during build." HelpUrl="https://github.com/dotnet/roslyn/blob/main/docs/compilers/CSharp/CommandLine.md" Category="General">
+    <EnumProperty.DataSource>
+      <DataSource HasConfigurationCondition="False" Persistence="ProjectFileWithInterception" />
+    </EnumProperty.DataSource>
+    <EnumProperty.Metadata>
+      <NameValuePair Name="SearchTerms" Value="debug type" />
+    </EnumProperty.Metadata>
+    <EnumValue Name="none" DisplayName="No symbols are emitted" />
+    <!--
+    Note that 'pdbonly' is the same as 'full'.
+    <EnumValue Name="pdbonly"
+               DisplayName="PDB Only" />
+    -->
+    <EnumValue Name="full" DisplayName="PDB file, current platform" />
+    <EnumValue Name="portable" DisplayName="PDB file, portable across platforms" />
+    <EnumValue Name="embedded" DisplayName="Embedded in DLL/EXE, portable across platforms" />
+  </EnumProperty>
+  <StringProperty Name="LangVersion" DisplayName="Versão da linguagem" Description="Por que não consigo selecionar a versão da linguagem C#?">
+    <StringProperty.DataSource>
+      <DataSource PersistedName="LangVersion" Persistence="ProjectFileWithInterception" HasConfigurationCondition="False" />
+    </StringProperty.DataSource>
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="LinkAction">
+        <ValueEditor.Metadata>
+          <NameValuePair Name="Action" Value="URL" />
+          <NameValuePair Name="URL" Value="https://aka.ms/csharp-versions" />
+        </ValueEditor.Metadata>
+      </ValueEditor>
+    </StringProperty.ValueEditors>
+  </StringProperty>
+  <!-- TODO create fwlink for this HelpUrl -->
+  <BoolProperty Name="CheckForOverflowUnderflow" DisplayName="Verificar se há estouro aritmético" Description="Especifica se a aritmética de inteiro que resulta em um valor fora do intervalo do tipo de dados e que não está no escopo de uma palavra-chave marcada ou desmarcada, causa uma exceção de tempo de execução." HelpUrl="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/checked-compiler-option" Category="General">
+    <BoolProperty.Metadata>
+      <NameValuePair Name="SearchTerms" Value="marcado;desmarcado" />
+    </BoolProperty.Metadata>
+  </BoolProperty>
+  <!-- TODO create fwlink for this HelpUrl -->
+  <BoolProperty Name="Deterministic" DisplayName="Determinístico" Description="Indica se o compilador deve produzir assemblies idênticos para entradas idênticas." HelpUrl="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/deterministic-compiler-option" Category="General" />
+  <!-- TODO create fwlink for this HelpUrl -->
+  <EnumProperty Name="ErrorReport" DisplayName="Relatórios de erro interno do compilador" Description="Controla quando os relatórios de ICE (erro interno do compilador) são enviados à Microsoft." HelpUrl="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/errorreport-compiler-option" Category="General">
+    <EnumProperty.DataSource>
+      <DataSource HasConfigurationCondition="False" />
+    </EnumProperty.DataSource>
+    <EnumValue Name="none" DisplayName="Nunca enviá-los" />
+    <EnumValue Name="prompt" DisplayName="Avisar antes de enviá-los" />
+    <EnumValue Name="queue" DisplayName="Colocá-los na fila" />
+    <EnumValue Name="send" DisplayName="Enviá-los" />
+  </EnumProperty>
+  <!-- TODO create fwlink for this HelpUrl -->
+  <EnumProperty Name="FileAlignment" DisplayName="Alinhamento do arquivo" Description="Especifica, em bytes, onde as seções do arquivo de saída devem ser alinhadas." HelpUrl="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/filealign-compiler-option" Category="General">
+    <EnumValue Name="512" DisplayName="512" />
+    <EnumValue Name="1024" DisplayName="1024" />
+    <EnumValue Name="2048" DisplayName="2048" />
+    <EnumValue Name="4096" DisplayName="4096" />
+    <EnumValue Name="8192" DisplayName="8192" />
+  </EnumProperty>
+  <EnumProperty Name="WarningLevel" DisplayName="Nível de aviso" Description="Especifica o nível a ser exibido para avisos do compilador." HelpUrl="https://go.microsoft.com/fwlink/?linkid=2146798" Category="ErrorsAndWarnings">
+    <EnumValue Name="0" DisplayName="0" />
+    <EnumValue Name="1" DisplayName="1" />
+    <EnumValue Name="2" DisplayName="2" />
+    <EnumValue Name="3" DisplayName="3" />
+    <EnumValue Name="4" DisplayName="4" />
+    <EnumValue Name="5" DisplayName="5" />
+  </EnumProperty>
+  <StringProperty Name="NoWarn" DisplayName="Suprimir avisos específicos" Description="Impede o compilador de gerar os avisos especificados. Separe vários números de aviso com uma vírgula (',') ou um ponto e vírgula (';')." HelpUrl="https://go.microsoft.com/fwlink/?linkid=2147300" Category="ErrorsAndWarnings" />
+  <BoolProperty Name="TreatWarningsAsErrors" HelpUrl="https://go.microsoft.com/fwlink/?linkid=2147301" DisplayName="Tratar avisos como erros" Description="Instruir o compilador a tratar avisos como erros." Category="ErrorsAndWarnings">
+    <BoolProperty.DataSource>
+      <DataSource Persistence="ProjectFileWithInterception" />
+    </BoolProperty.DataSource>
+  </BoolProperty>
+  <StringProperty Name="WarningsAsErrors" DisplayName="Tratar avisos específicos como erros" HelpUrl="https://go.microsoft.com/fwlink/?linkid=2147301" Description="Especifica quais avisos são tratados como erros. Separe vários números de aviso com uma vírgula (',') ou um ponto e vírgula (';')." Category="ErrorsAndWarnings">
+    <StringProperty.Metadata>
+      <NameValuePair Name="DependsOn" Value="Build::TreatWarningsAsErrors" />
+      <NameValuePair Name="VisibilityCondition">
+        <NameValuePair.Value>(has-evaluated-value "Build" "TreatWarningsAsErrors" false)</NameValuePair.Value>
+      </NameValuePair>
+    </StringProperty.Metadata>
+  </StringProperty>
+  <StringProperty Name="WarningsNotAsErrors" DisplayName="Excluir avisos específicos como erros" HelpUrl="https://go.microsoft.com/fwlink/?linkid=2147301" Description="Especifica quais avisos não devem ser tratados como erros. Separe vários números de aviso com uma vírgula (',') ou um ponto e vírgula (';')." Category="ErrorsAndWarnings">
+    <StringProperty.Metadata>
+      <NameValuePair Name="DependsOn" Value="Build::TreatWarningsAsErrors" />
+      <NameValuePair Name="VisibilityCondition">
+        <NameValuePair.Value>(has-evaluated-value "Build" "TreatWarningsAsErrors" true)</NameValuePair.Value>
+      </NameValuePair>
+    </StringProperty.Metadata>
+  </StringProperty>
+  <StringProperty Name="BaseOutputPath" DisplayName="Caminho base da saída" Description="Especifica o local base para a saída do projeto durante o build. As subpastas serão acrescentadas a este caminho para diferenciar a configuração do projeto." Category="Output" Subtype="directory">
+    <StringProperty.DataSource>
+      <DataSource HasConfigurationCondition="False" />
+    </StringProperty.DataSource>
+  </StringProperty>
+  <StringProperty Name="BaseIntermediateOutputPath" DisplayName="Caminho base da saída intermediária" Description="Especifica o local base para a saída intermediária do projeto durante o build. As subpastas serão acrescentadas a este caminho para diferenciar a configuração do projeto." Category="Output" Subtype="directory">
+    <StringProperty.DataSource>
+      <DataSource HasConfigurationCondition="False" />
+    </StringProperty.DataSource>
+  </StringProperty>
+  <!-- TODO create fwlink for this HelpUrl -->
+  <BoolProperty Name="GenerateDocumentationFile" DisplayName="Arquivo da documentação" Description="Gerar um arquivo contendo a documentação da API." HelpUrl="https://docs.microsoft.com/en-us/dotnet/csharp/codedoc" Category="Output">
+    <BoolProperty.DataSource>
+      <DataSource HasConfigurationCondition="False" />
+    </BoolProperty.DataSource>
+    <BoolProperty.Metadata>
+      <NameValuePair Name="VisibilityCondition">
+        <NameValuePair.Value>(has-project-capability "GenerateDocumentationFile")</NameValuePair.Value>
+      </NameValuePair>
+    </BoolProperty.Metadata>
+  </BoolProperty>
+  <!-- TODO consider removing this property from the UI altogether -->
+  <StringProperty Name="DocumentationFile" DisplayName="Caminho do arquivo de documentação XML" Description="Caminho opcional para o arquivo de documentação da API. Deixe em branco para usar o local padrão." HelpUrl="https://go.microsoft.com/fwlink/?linkid=2147081" Category="Output" Subtype="file">
+    <StringProperty.DataSource>
+      <DataSource HasConfigurationCondition="False" />
+    </StringProperty.DataSource>
+    <StringProperty.Metadata>
+      <NameValuePair Name="VisibilityCondition">
+        <NameValuePair.Value>(evaluated "Build" "GenerateDocumentationFile")</NameValuePair.Value>
+      </NameValuePair>
+    </StringProperty.Metadata>
+  </StringProperty>
+  <!-- TODO create fwlink -->
+  <StringProperty Name="PreBuildEvent" DisplayName="Pre-build event" Description="Specifies commands that run before the build starts. Does not run if the project is up-to-date. A non-zero exit code will fail the build before it runs." HelpUrl="https://docs.microsoft.com/en-us/visualstudio/ide/how-to-specify-build-events-csharp?view=vs-2019" Category="Events">
+    <StringProperty.DataSource>
+      <DataSource HasConfigurationCondition="False" Persistence="ProjectFileWithInterception" SourceOfDefaultValue="AfterContext" />
+    </StringProperty.DataSource>
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="MultiLineString">
+        <ValueEditor.Metadata>
+          <NameValuePair Name="UseMonospaceFont" Value="True" />
+        </ValueEditor.Metadata>
+      </ValueEditor>
+    </StringProperty.ValueEditors>
+  </StringProperty>
+  <!-- TODO create fwlink -->
+  <StringProperty Name="PostBuildEvent" DisplayName="Post-build event" Description="Specifies commands that run after the build completes. Does not run if the build failed. Use 'call' to invoke .bat files. A non-zero exit code will fail the build." HelpUrl="https://docs.microsoft.com/en-us/visualstudio/ide/how-to-specify-build-events-csharp?view=vs-2019" Category="Events">
+    <StringProperty.DataSource>
+      <DataSource HasConfigurationCondition="False" Persistence="ProjectFileWithInterception" SourceOfDefaultValue="AfterContext" />
+    </StringProperty.DataSource>
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="MultiLineString">
+        <ValueEditor.Metadata>
+          <NameValuePair Name="UseMonospaceFont" Value="True" />
+        </ValueEditor.Metadata>
+      </ValueEditor>
+    </StringProperty.ValueEditors>
+  </StringProperty>
+  <!-- TODO create fwlink -->
+  <EnumProperty Name="RunPostBuildEvent" DisplayName="When to run the post-build event" Description="Specifies under which condition the post-build event will be executed." HelpUrl="https://docs.microsoft.com/en-us/visualstudio/ide/how-to-specify-build-events-csharp?view=vs-2019" Category="Events">
+    <EnumProperty.DataSource>
+      <DataSource HasConfigurationCondition="False" PersistedName="RunPostBuildEvent" Persistence="ProjectFile" SourceOfDefaultValue="AfterContext" />
+    </EnumProperty.DataSource>
+    <EnumValue Name="Always" />
+    <EnumValue Name="OnBuildSuccess" IsDefault="True" />
+    <EnumValue Name="OnOutputUpdated" />
+  </EnumProperty>
+  <BoolProperty Name="SignAssembly" Description="Assinar o assembly de saída para dar a ele um nome forte." HelpUrl="https://go.microsoft.com/fwlink/?linkid=2147136" DisplayName="Assinar o assembly" Category="StrongNaming">
+    <BoolProperty.DataSource>
+      <DataSource Persistence="ProjectFileWithInterception" SourceOfDefaultValue="BeforeContext" HasConfigurationCondition="False" />
+    </BoolProperty.DataSource>
+  </BoolProperty>
+  <StringProperty Name="AssemblyOriginatorKeyFile" DisplayName="Arquivo da chave de nome forte" Category="StrongNaming" Subtype="file">
+    <StringProperty.Metadata>
+      <NameValuePair Name="VisibilityCondition">
+        <NameValuePair.Value>(evaluated "Build" "SignAssembly")</NameValuePair.Value>
+      </NameValuePair>
+    </StringProperty.Metadata>
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFileWithInterception" SourceOfDefaultValue="BeforeContext" HasConfigurationCondition="False" />
+    </StringProperty.DataSource>
+  </StringProperty>
+  <BoolProperty Name="DelaySign" Description="Use a assinatura atrasada quando o acesso à chave privada for restrito. A chave pública será usada durante o build e a adição das informações de chave privada será adiada até que o assembly seja entregue." HelpUrl="https://go.microsoft.com/fwlink/?linkid=2147243" DisplayName="Sinal de atraso somente" Category="StrongNaming">
+    <BoolProperty.Metadata>
+      <NameValuePair Name="VisibilityCondition">
+        <NameValuePair.Value>(evaluated "Build" "SignAssembly")</NameValuePair.Value>
+      </NameValuePair>
+    </BoolProperty.Metadata>
+    <BoolProperty.DataSource>
+      <DataSource Persistence="ProjectFileWithInterception" SourceOfDefaultValue="BeforeContext" HasConfigurationCondition="False" />
+    </BoolProperty.DataSource>
+  </BoolProperty>
+</Rule>
