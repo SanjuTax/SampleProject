@@ -39,6 +39,11 @@ Add-Type -AssemblyName System.IO.Compression.FileSystem
 
 # Clean up the temporary folder
 Remove-Item -Path $tempFolder -Recurse
+# Check if the folder exists and delete it
+if (Test-Path -Path $tempFolder) {
+    Remove-Item -Path $tempFolder -Recurse -Force
+}
+
 Write-Output "Folder has been zipped and moved to $zipFilePath"
 
 # Update to the latest version
