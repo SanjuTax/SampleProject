@@ -1,7 +1,7 @@
 Write-Output "Every Project power shell script triggered"
 
 # defining the paths to each folder
-$ReleaseFolder = 'C:\Jenkins\workspace\Sanjith_test\Release\Sanju'
+$ReleaseFolder = 'C:\Jenkins\workspace\Sanjith_test\DotNetProject'
 $ConfiguredFolder = 'C:\Jenkins\workspace\Sanjith_test\Configured'
 $BackupRoot = 'C:\Jenkins\workspace\Sanjith_test\Backup\'
 $zipFileName = "ArchivedFolder_$(Get-Date -Format 'yyyyMMddHHmmss').zip"
