@@ -23,6 +23,12 @@ if (-not (Test-Path -Path $BackupFolder)) {
      New-Item -ItemType Directory -Path $BackupFolder
 }
 
+#Creating a backupFolder
+if (-not (Test-Path -Path $tempFolder)) {
+     Write-Output "Creating BackupFolder at $tempFolder"
+     New-Item -ItemType Directory -Path $tempFolder
+}
+
 # Move the Configured folder to the temporary folder (cut operation)
 Move-Item -Path $ConfiguredFolder -Destination $tempFolder
 
